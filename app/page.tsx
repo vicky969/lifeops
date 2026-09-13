@@ -1,3 +1,31 @@
+type Habit = {
+  id: number;
+  title: string;
+  target: string;
+  status: string;
+};
+
+const habits: Habit[] = [
+  {
+    id: 1,
+    title: "Deep work",
+    target: "90 minutes",
+    status: "Not started",
+  },
+  {
+    id: 2,
+    title: "Exercise",
+    target: "30 minutes",
+    status: "In progress",
+  },
+  {
+    id: 3,
+    title: "Reading",
+    target: "20 pages",
+    status: "Complete",
+  },
+];
+
 type HabitCardProps = {
   title: string;
   target: string;
@@ -31,21 +59,14 @@ export default function Home() {
         </p>
 
         <div className="mt-10 grid gap-5 md:grid-cols-3">
-          <HabitCard
-            title="Deep work"
-            target="90 minutes"
-            status="Not started"
-          />
-          <HabitCard
-            title="Exercise"
-            target="30 minutes"
-            status="In progress"
-          />
-          <HabitCard
-            title="Reading"
-            target="20 pages"
-            status="Complete"
-          />
+          {habits.map((habit) => (
+            <HabitCard
+              key={habit.id}
+              title={habit.title}
+              target={habit.target}
+              status={habit.status}
+            />
+          ))}
         </div>
       </section>
     </main>
