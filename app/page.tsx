@@ -1,11 +1,17 @@
+"use client";
+
+import { useState } from "react";
+
+type HabitStatus = "Not started" | "In progress" | "Complete";
+
 type Habit = {
   id: number;
   title: string;
   target: string;
-  status: string;
+  status: HabitStatus;
 };
 
-const habits: Habit[] = [
+const initialHabits: Habit[] = [
   {
     id: 1,
     title: "Deep work",
@@ -27,22 +33,49 @@ const habits: Habit[] = [
 ];
 
 type HabitCardProps = {
-  title: string;
-  target: string;
-  status: string;
+  habit: Habit;
+  onComplete: (id: number) => void;
 };
 
-function HabitCard({ title, target, status }: HabitCardProps) {
+function HabitCard({ habit, onComplete }: HabitCardProps) {
+  const isComplete = habit.status === "Complete";
+
   return (
     <article className="rounded-xl bg-white p-6 shadow-sm">
-      <h2 className="text-xl font-semibold text-slate-900">{title}</h2>
-      <p className="mt-2 text-slate-600">Target: {target}</p>
-      <p className="mt-4 font-medium text-indigo-600">{status}</p>
+      <h2 className="text-xl font-semibold text-slate-900">
+        {habit.title}
+      </h2>
+
+      <p className="mt-2 text-slate-600">Target: {habit.target}</p>
+
+      <p className="mt-4 font-medium text-indigo-600">{habit.status}</p>
+
+      <button
+        onClick={() => onComplete(habit.id)}
+        disabled={isComplete}
+        className="mt-5 rounded-lg bg-indigo-600 px-4 py-2 font-medium text-white disabled:cursor-not-allowed disabled:bg-slate-300"
+      >
+        {isComplete ? "Completed" : "Mark complete"}
+      </button>
     </article>
   );
 }
 
 export default function Home() {
+  const [habits, setHabits] = useState(initialHabits);
+
+  function completeHabit(id: number) {
+    const updatedHabits = habits.map((habit) => {
+      if (habit.id === id) {
+        return { ...habit, status: "Complete" as HabitStatus };
+      }
+
+      return habit;
+    });
+
+    setHabits(updatedHabits);
+  }
+
   return (
     <main className="min-h-screen bg-slate-100 p-8">
       <section className="mx-auto max-w-4xl">
@@ -62,9 +95,8 @@ export default function Home() {
           {habits.map((habit) => (
             <HabitCard
               key={habit.id}
-              title={habit.title}
-              target={habit.target}
-              status={habit.status}
+              habit={habit}
+              onComplete={completeHabit}
             />
           ))}
         </div>
